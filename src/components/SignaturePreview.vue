@@ -25,7 +25,7 @@
           </button>
         </div>
 
-        <div class="window-body">
+        <div class="window-body" contenteditable="true">
           <component
             :is="componentName"
             v-bind="processedUserData"

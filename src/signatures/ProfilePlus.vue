@@ -110,68 +110,70 @@
                                       float: right;
                                     "
                                   >
-                                    <tr>
-                                      <td
-                                        style="width: 20px; padding-left: 4px"
-                                      >
-                                        <a
-                                          href="#"
-                                          target="_blank"
-                                          style="
-                                            display: inline-block;
-                                            text-decoration: none;
-                                          "
+                                    <tbody style="text-align: right">
+                                      <tr>
+                                        <td
+                                          style="width: 20px; padding-left: 4px"
                                         >
-                                          <img
-                                            width="20"
-                                            height="20"
-                                            style="display: block"
-                                            src="https://placeholder.com/20x20"
-                                            alt="social"
-                                          />
-                                        </a>
-                                      </td>
-                                      <td
-                                        style="width: 20px; padding-left: 4px"
-                                      >
-                                        <a
-                                          href="#"
-                                          target="_blank"
-                                          style="
-                                            display: inline-block;
-                                            text-decoration: none;
-                                          "
+                                          <a
+                                            href="#"
+                                            target="_blank"
+                                            style="
+                                              display: inline-block;
+                                              text-decoration: none;
+                                            "
+                                          >
+                                            <img
+                                              width="20"
+                                              height="20"
+                                              style="display: block"
+                                              src="https://placeholder.com/20x20"
+                                              alt="social"
+                                            />
+                                          </a>
+                                        </td>
+                                        <td
+                                          style="width: 20px; padding-left: 4px"
                                         >
-                                          <img
-                                            width="20"
-                                            height="20"
-                                            style="display: block"
-                                            src="https://placeholder.com/20x20"
-                                            alt="social"
-                                          />
-                                        </a>
-                                      </td>
-                                      <td
-                                        style="width: 20px; padding-left: 4px"
-                                      >
-                                        <a
-                                          href="#"
-                                          target="_blank"
-                                          style="
-                                            display: inline-block;
-                                            text-decoration: none;
-                                          "
+                                          <a
+                                            href="#"
+                                            target="_blank"
+                                            style="
+                                              display: inline-block;
+                                              text-decoration: none;
+                                            "
+                                          >
+                                            <img
+                                              width="20"
+                                              height="20"
+                                              style="display: block"
+                                              src="https://placeholder.com/20x20"
+                                              alt="social"
+                                            />
+                                          </a>
+                                        </td>
+                                        <td
+                                          style="width: 20px; padding-left: 4px"
                                         >
-                                          <img
-                                            width="20"
-                                            height="20"
-                                            style="display: block"
-                                            src="https://placeholder.com/20x20"
-                                            alt="social"
-                                          />
-                                        </a>
-                                      </td>
-                                    </tr>
+                                          <a
+                                            href="#"
+                                            target="_blank"
+                                            style="
+                                              display: inline-block;
+                                              text-decoration: none;
+                                            "
+                                          >
+                                            <img
+                                              width="20"
+                                              height="20"
+                                              style="display: block"
+                                              src="https://placeholder.com/20x20"
+                                              alt="social"
+                                            />
+                                          </a>
+                                        </td>
+                                      </tr>
+                                    </tbody>
                                   </table>
                                 </td>
                               </tr>
