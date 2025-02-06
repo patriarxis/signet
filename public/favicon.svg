@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="512" height="512"><svg id="SvgjsSvg1012" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e6e6e6;
+      }
+
+      .cls-2 {
+        fill: #ee4137;
+      }
+
+      .cls-3 {
+        fill: #333;
+      }
+    </style>
+  </defs>
+  <rect class="cls-1" x="0" y="0" width="512" height="512"></rect>
+  <g>
+    <path class="cls-3" d="M172,427.87v-183.54c0-5.34,2.12-10.46,5.9-14.23l52.21-52.21c3.77-3.77,8.89-5.9,14.23-5.9h183.54c11.12,0,20.13-9.01,20.13-20.13v-67.74c0-11.12-9.01-20.13-20.13-20.13H136.34l-14.23,5.9-52.21,52.21c-3.77,3.77-5.9,8.89-5.9,14.23v291.54c0,11.12,9.01,20.13,20.13,20.13h67.74c11.12,0,20.13-9.01,20.13-20.13Z"></path>
+    <path class="cls-2" d="M427.87,244h-111.54c-5.34,0-10.46,2.12-14.23,5.9l-52.21,52.21c-3.77,3.77-5.9,8.89-5.9,14.23v111.54c0,11.12,9.01,20.13,20.13,20.13h111.54c5.34,0,10.46-2.12,14.23-5.9l52.21-52.21c3.77-3.77,5.9-8.89,5.9-14.23v-111.54c0-11.12-9.01-20.13-20.13-20.13Z"></path>
+  </g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>
