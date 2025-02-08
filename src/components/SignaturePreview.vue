@@ -116,17 +116,30 @@ export default {
 
         const signatureHtml = targetComponent.$el.outerHTML;
 
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(signatureHtml);
+        if (navigator.clipboard && navigator.clipboard.write) {
+          const htmlBlob = new Blob([signatureHtml], { type: "text/html" });
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              "text/html": htmlBlob,
+            }),
+          ]);
         } else {
-          const textarea = document.createElement("textarea");
-          textarea.value = signatureHtml;
-          textarea.style.position = "fixed";
-          document.body.appendChild(textarea);
-          textarea.select();
+          const tempDiv = document.createElement("div");
+          tempDiv.style.position = "fixed";
+          tempDiv.style.left = "-9999px";
+          tempDiv.innerHTML = signatureHtml;
+          document.body.appendChild(tempDiv);
+
+          const range = document.createRange();
+          range.selectNode(tempDiv);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
 
           const success = document.execCommand("copy");
-          document.body.removeChild(textarea);
+
+          selection.removeAllRanges();
+          document.body.removeChild(tempDiv);
 
           if (!success) {
             throw new Error("Copy command failed");
