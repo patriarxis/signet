@@ -52,7 +52,7 @@
                             style="display: block; text-decoration: none"
                           >
                             <img
-                              src="https://placeholder.com/56x56"
+                              src="https://placehold.co/56x56"
                               width="56"
                               height="56"
                               :alt="website"
@@ -127,7 +127,7 @@
                                               width="20"
                                               height="20"
                                               style="display: block"
-                                              src="https://placeholder.com/20x20"
+                                              src="https://placehold.co/20x20"
                                               alt="social"
                                             />
                                           </a>
@@ -147,7 +147,7 @@
                                               width="20"
                                               height="20"
                                               style="display: block"
-                                              src="https://placeholder.com/20x20"
+                                              src="https://placehold.co/20x20"
                                               alt="social"
                                             />
                                           </a>
@@ -167,7 +167,7 @@
                                               width="20"
                                               height="20"
                                               style="display: block"
-                                              src="https://placeholder.com/20x20"
+                                              src="https://placehold.co/20x20"
                                               alt="social"
                                             />
                                           </a>

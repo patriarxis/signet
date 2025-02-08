@@ -129,7 +129,7 @@
                         <td style="width: 40px">
                           <a :href="websiteUrl">
                             <img
-                              src="https://placeholder.com/40x40"
+                              src="https://placehold.co/40x40"
                               :alt="website"
                               width="40"
                               height="40"

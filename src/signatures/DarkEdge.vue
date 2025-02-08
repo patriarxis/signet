@@ -86,7 +86,7 @@
               <tr>
                 <td>
                   <img
-                    src="https://placeholder.com/48x48"
+                    src="https://placehold.co/48x48"
                     :alt="website"
                     width="48"
                     height="48"
