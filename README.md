@@ -1,5 +1,9 @@
-# Vue 3 + TypeScript + Vite
+# Signet
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+[![Vue.js](https://img.shields.io/badge/vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![GitHub repo size](https://img.shields.io/github/repo-size/patriarxis/signet)
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+**Effortlessly browse, customize, and use email signatures**
+
+Signet is a lightweight email signature library designed for simplicity and privacy. Browse pre-made templates, customize them to match your style, and copy-paste directly into your email client. All edits happen locally in your browser.
