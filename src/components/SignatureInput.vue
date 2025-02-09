@@ -1,10 +1,10 @@
 <template>
   <aside class="aside">
     <header class="header">
-      <h1 class="title">Email Signatures</h1>
+      <h1 class="title">Signet - Email Signatures</h1>
       <p class="description">
-        These are some email signatures I used over the years. Feel free to copy
-        them and use them as you please.
+        Signet lets you browse and customize email signatures effortlessly.
+        Edit, copy, and use them as you please.
       </p>
     </header>
 
@@ -420,13 +420,11 @@ export default {
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
 }
 
 .description {
   font-size: 1rem;
   color: var(--neutral-6);
-  margin-bottom: 1rem;
 }
 
 .scroll-container {
