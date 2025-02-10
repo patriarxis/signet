@@ -1,6 +1,6 @@
 {
-  "name": "Email Signatures",
-  "short_name": "Email Signatures",
+  "name": "Signet",
+  "short_name": "Signet",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
