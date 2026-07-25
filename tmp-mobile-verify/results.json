@@ -1,0 +1,551 @@
+[
+  {
+    "label": "phone-390",
+    "width": 390,
+    "height": 844,
+    "closed": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -390, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "59.5px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 374,
+        "scrollWidth": 374,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "open": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "overflowOk": true,
+      "drawerOpen": true,
+      "asideTransform": "matrix(1, 0, 0, 1, 0, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "true",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": true,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "59.5px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 374,
+        "scrollWidth": 374,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "color(srgb 0.8 0.8 0.8 / 0.55)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "drawerWidth": {
+      "width": "390px",
+      "maxWidth": "none",
+      "clientWidth": 390,
+      "innerWidth": 390,
+      "isFullWidth": true
+    },
+    "stillOpenAfterOpenBtn": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "overflowOk": true,
+      "drawerOpen": true,
+      "asideTransform": "matrix(1, 0, 0, 1, 0, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "true",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": true,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "59.5px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 374,
+        "scrollWidth": 374,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "afterBackdrop": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -390, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "59.5px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 374,
+        "scrollWidth": 374,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "afterDrawerClose": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -390, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "59.5px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 374,
+        "scrollWidth": 374,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "afterEscape": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -390, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "59.5px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 374,
+        "scrollWidth": 374,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "color(srgb 0.8 0.8 0.8 / 0.45)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    }
+  },
+  {
+    "label": "tablet-768",
+    "width": 768,
+    "height": 1024,
+    "closed": {
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -400, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "63px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "open": {
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "overflowOk": true,
+      "drawerOpen": true,
+      "asideTransform": "matrix(1, 0, 0, 1, 0, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "true",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": true,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "63px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "color(srgb 0.8 0.8 0.8 / 0.55)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "drawerWidth": {
+      "width": "400px",
+      "maxWidth": "400px",
+      "clientWidth": 399,
+      "innerWidth": 768,
+      "isFullWidth": false
+    },
+    "stillOpenAfterOpenBtn": {
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -399.019, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "63px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "color(srgb 0.8 0.8 0.8 / 0.55)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "afterBackdrop": {
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -400, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "63px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "afterDrawerClose": {
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -400, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "63px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    },
+    "afterEscape": {
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "matrix(1, 0, 0, 1, -400, 0)",
+      "asidePosition": "fixed",
+      "openBtnDisplay": "flex",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 50,
+        "stackOk": true
+      },
+      "containerPaddingTop": "63px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "color(srgb 0.8 0.8 0.8 / 0.45)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": {
+        "width": "35px",
+        "height": "35px",
+        "borderRadius": "50%",
+        "display": "flex"
+      }
+    }
+  },
+  {
+    "label": "desktop",
+    "desktop": {
+      "innerWidth": 1280,
+      "scrollWidth": 1280,
+      "overflowOk": true,
+      "drawerOpen": false,
+      "asideTransform": "none",
+      "asidePosition": "static",
+      "openBtnDisplay": "none",
+      "openBtnExpanded": "false",
+      "openBtnLabel": "Open editor",
+      "bodyHasDrawerOpen": false,
+      "zIndex": {
+        "actions": 30,
+        "backdrop": 40,
+        "drawer": 0,
+        "stackOk": false
+      },
+      "containerPaddingTop": "72px",
+      "cardsCenteredInContainer": 0,
+      "windowCenteredInContainer": 0,
+      "tableCenteredInBody": true,
+      "firstCardClearsActions": true,
+      "signatureCard": {
+        "clientWidth": 678,
+        "scrollWidth": 678,
+        "canScrollX": false
+      },
+      "actionBtnChrome": {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderWidth": "0px",
+        "borderStyle": "none",
+        "boxShadow": "none"
+      },
+      "drawerCloseRadius": null
+    },
+    "layout": {
+      "asidePosition": "static",
+      "asideTransform": "none",
+      "asideMaxWidth": "400px",
+      "openBtnDisplay": "none",
+      "containerFlex": "row"
+    }
+  }
+]

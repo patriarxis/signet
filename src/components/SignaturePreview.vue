@@ -1,192 +1,310 @@
+<script setup lang="ts">
+import { PhClipboard, PhCode, PhEye } from "@phosphor-icons/vue";
+import {
+  defineAsyncComponent,
+  markRaw,
+  nextTick,
+  provide,
+  reactive,
+  ref,
+  type Component,
+  type Reactive,
+} from "vue";
+import {
+  CleanSlate,
+  CorporatePro,
+  DarkEdge,
+  ProfilePlus,
+} from "../signatures";
+import type {
+  BodyLink,
+  FieldStyle,
+  FieldStyleField,
+  LogoStyle,
+  UserData,
+} from "../types/signature";
+import {
+  signatureEditorKey,
+  type SignatureEditor,
+} from "../composables/signatureEditor";
+import { useClipboardHtml } from "../composables/useClipboardHtml";
+import { formatHtml } from "../utils/formatHtml";
+import { sanitizeSignatureHtml } from "../utils/sanitizeSignatureHtml";
+import FormatBubble from "./FormatBubble.vue";
+import ImageBubble from "./ImageBubble.vue";
+
+const HtmlCodeEditor = defineAsyncComponent(
+  () => import("./HtmlCodeEditor.vue"),
+);
+
+const props = defineProps<{
+  userData: UserData;
+  updateField: <K extends keyof UserData>(key: K, value: UserData[K]) => void;
+  updateLogoStyle: (key: string, patch: Partial<LogoStyle>) => void;
+  updateFieldStyle: (
+    styleKey: string,
+    field: FieldStyleField,
+    patch: Partial<FieldStyle>,
+  ) => void;
+  updateLink: (
+    list: "bodyLinks" | "socialLinks",
+    index: number,
+    patch: Partial<BodyLink>,
+  ) => void;
+}>();
+
+const { status, message, copyHtml } = useClipboardHtml();
+const toastFor = ref<string | null>(null);
+
+const editor: SignatureEditor = {
+  userData: props.userData as Reactive<UserData>,
+  updateField: (...args) => props.updateField(...args),
+  updateLogoStyle: (...args) => props.updateLogoStyle(...args),
+  updateFieldStyle: (...args) => props.updateFieldStyle(...args),
+  updateLink: (...args) => props.updateLink(...args),
+};
+
+provide(signatureEditorKey, editor);
+
+type SignatureDef = {
+  id: string;
+  label: string;
+  component: Component;
+};
+
+const signatures: SignatureDef[] = [
+  { id: "dark-edge", label: "Dark Edge", component: markRaw(DarkEdge) },
+  { id: "clean-slate", label: "Clean Slate", component: markRaw(CleanSlate) },
+  {
+    id: "profile-plus",
+    label: "Profile Plus",
+    component: markRaw(ProfilePlus),
+  },
+  {
+    id: "corporate-pro",
+    label: "Corporate Pro",
+    component: markRaw(CorporatePro),
+  },
+];
+
+const signatureIds = signatures.map((s) => s.id);
+const signatureRootMap = reactive<Record<string, HTMLElement | null>>(
+  Object.fromEntries(signatureIds.map((id) => [id, null])),
+);
+
+type ViewMode = "preview" | "code";
+const viewModes = reactive<Record<string, ViewMode>>(
+  Object.fromEntries(signatureIds.map((id) => [id, "preview" as ViewMode])),
+);
+const codeDrafts = reactive<Record<string, string>>(
+  Object.fromEntries(signatureIds.map((id) => [id, ""])),
+);
+const codeBaselines = reactive<Record<string, string>>(
+  Object.fromEntries(signatureIds.map((id) => [id, ""])),
+);
+const htmlOverrides = reactive<Record<string, string | null>>(
+  Object.fromEntries(signatureIds.map((id) => [id, null])),
+);
+
+function setSignatureRoot(id: string, el: unknown) {
+  signatureRootMap[id] = (el as HTMLElement | null) ?? null;
+}
+
+/** Collapse whitespace so formatting-only diffs don't count as edits. */
+function normalizeHtml(html: string) {
+  return html.replace(/\s+/g, " ").trim();
+}
+
+async function copySignature(id: string) {
+  toastFor.value = id;
+  let html = "";
+
+  if (viewModes[id] === "code") {
+    html = codeDrafts[id] || "";
+  } else if (htmlOverrides[id]) {
+    html = htmlOverrides[id]!;
+  } else {
+    const root = signatureRootMap[id];
+    if (!root) return;
+    html = sanitizeSignatureHtml(root);
+  }
+
+  await copyHtml(html);
+}
+
+async function toggleView(id: string) {
+  if (viewModes[id] === "preview") {
+    let source = "";
+    if (htmlOverrides[id]) {
+      source = htmlOverrides[id]!;
+    } else {
+      await nextTick();
+      const root = signatureRootMap[id];
+      source = root ? sanitizeSignatureHtml(root) : codeDrafts[id] || "";
+    }
+    const formatted = formatHtml(source);
+    codeDrafts[id] = formatted;
+    codeBaselines[id] = formatted;
+    viewModes[id] = "code";
+    return;
+  }
+
+  const draft = codeDrafts[id]?.trim() ?? "";
+  const changed =
+    !!draft && normalizeHtml(draft) !== normalizeHtml(codeBaselines[id] || "");
+
+  // Keep a static override only when HTML was actually edited.
+  // Otherwise restore the live Vue signature so inline editing works again.
+  htmlOverrides[id] = changed ? draft : null;
+  codeBaselines[id] = "";
+  viewModes[id] = "preview";
+}
+
+function clearOverrides() {
+  signatureIds.forEach((id) => {
+    htmlOverrides[id] = null;
+    viewModes[id] = "preview";
+    codeDrafts[id] = "";
+    codeBaselines[id] = "";
+  });
+}
+
+defineExpose({ clearOverrides });
+</script>
+
 <template>
   <div class="signatures-container">
+    <FormatBubble />
+    <ImageBubble />
+
     <div class="signatures">
       <div
-        v-for="(componentName, index) in signatures"
-        :key="index"
+        v-for="sig in signatures"
+        :key="sig.id"
         class="signature-item window"
       >
         <div class="window-top">
-          <h3 class="window-title">{{ index }}</h3>
-
-          <button @click="copySignature(index)" class="copy-button">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="512"
-              height="512"
-              fill="currentColor"
-              class="bi bi-clipboard"
-              viewBox="0 0 512 512"
+          <h3 class="window-title">{{ sig.label }}</h3>
+          <div class="window-actions">
+            <button
+              type="button"
+              class="icon-button"
+              :title="
+                viewModes[sig.id] === 'preview'
+                  ? 'Edit HTML code'
+                  : 'Preview signature'
+              "
+              :aria-label="
+                viewModes[sig.id] === 'preview'
+                  ? 'Edit HTML code'
+                  : 'Preview signature'
+              "
+              @click="toggleView(sig.id)"
             >
-              <path
-                d="M277.333 426.667C305.613 426.633 332.724 415.384 352.721 395.387C372.717 375.391 383.966 348.279 384 320V133.184C384.033 121.97 381.84 110.862 377.548 100.502C373.256 90.1419 366.951 80.7369 358.997 72.832L311.168 25.0027C303.263 17.049 293.858 10.7435 283.498 6.45163C273.138 2.15974 262.03 -0.0331758 250.816 4.76697e-06H149.333C121.054 0.0338791 93.9426 11.2828 73.946 31.2794C53.9495 51.2759 42.7005 78.3873 42.6667 106.667V320C42.7005 348.279 53.9495 375.391 73.946 395.387C93.9426 415.384 121.054 426.633 149.333 426.667H277.333ZM85.3333 320V106.667C85.3333 89.6928 92.0762 73.4142 104.078 61.4118C116.081 49.4095 132.359 42.6667 149.333 42.6667C149.333 42.6667 254.272 42.9653 256 43.1787V85.3333C256 96.6492 260.495 107.502 268.497 115.503C276.498 123.505 287.351 128 298.667 128H340.821C341.035 129.728 341.333 320 341.333 320C341.333 336.974 334.591 353.253 322.588 365.255C310.586 377.257 294.307 384 277.333 384H149.333C132.359 384 116.081 377.257 104.078 365.255C92.0762 353.253 85.3333 336.974 85.3333 320ZM469.333 170.667V405.333C469.299 433.613 458.051 460.724 438.054 480.721C418.057 500.717 390.946 511.966 362.667 512H170.667C165.009 512 159.583 509.752 155.582 505.752C151.581 501.751 149.333 496.325 149.333 490.667C149.333 485.009 151.581 479.582 155.582 475.582C159.583 471.581 165.009 469.333 170.667 469.333H362.667C379.641 469.333 395.919 462.591 407.922 450.588C419.924 438.586 426.667 422.307 426.667 405.333V170.667C426.667 165.009 428.914 159.583 432.915 155.582C436.916 151.581 442.342 149.333 448 149.333C453.658 149.333 459.084 151.581 463.085 155.582C467.086 159.583 469.333 165.009 469.333 170.667Z"
+              <PhCode
+                v-if="viewModes[sig.id] === 'preview'"
+                :size="16"
+                weight="bold"
               />
-            </svg>
-          </button>
+              <PhEye v-else :size="16" weight="fill" />
+            </button>
+            <div class="copy-wrap">
+              <button
+                type="button"
+                class="icon-button"
+                title="Copy signature HTML"
+                aria-label="Copy signature HTML"
+                @click="copySignature(sig.id)"
+              >
+                <PhClipboard :size="16" weight="bold" />
+              </button>
+              <p
+                v-if="message && toastFor === sig.id"
+                class="copy-tooltip"
+                :data-status="status"
+                role="status"
+                aria-live="polite"
+              >
+                {{ message }}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div class="window-body" contenteditable="true">
-          <component
-            :is="componentName"
-            v-bind="processedUserData"
-            ref="signatureComponents"
-            class="signature"
+        <div
+          class="window-body"
+          :class="{ 'window-body--code': viewModes[sig.id] === 'code' }"
+        >
+          <HtmlCodeEditor
+            v-if="viewModes[sig.id] === 'code'"
+            v-model="codeDrafts[sig.id]"
           />
+          <div
+            v-else-if="htmlOverrides[sig.id]"
+            class="signature-root signature-override"
+            v-html="htmlOverrides[sig.id]"
+          />
+          <div
+            v-else
+            :ref="(el) => setSignatureRoot(sig.id, el)"
+            class="signature-root"
+          >
+            <component :is="sig.component" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { markRaw } from "vue";
-import { DarkEdge, CleanSlate, ProfilePlus, CorporatePro } from "../signatures";
-
-export default {
-  name: "SignaturePreview",
-
-  props: {
-    userData: {
-      type: Object,
-      required: true,
-      default: () => ({
-        name: "",
-        description: "",
-        companyName: "",
-        companyTagline: "",
-        phone: "",
-        email: "",
-        website: "",
-        websiteUrl: "",
-        bodyLinks: [],
-        socialLinks: [],
-        copyrights: "",
-        disclaimer: "",
-      }),
-    },
-  },
-
-  computed: {
-    processedUserData() {
-      return {
-        ...this.userData,
-        bodyLinks: this.userData.bodyLinks.map((link) => ({
-          text: String(link.text || ""),
-          url: String(link.url || ""),
-        })),
-        socialLinks: this.userData.socialLinks.map((link) => ({
-          text: String(link.text || ""),
-          url: String(link.url || ""),
-        })),
-      };
-    },
-  },
-
-  data() {
-    return {
-      signatures: {
-        "dark-edge": markRaw(DarkEdge),
-        "clean-slate": markRaw(CleanSlate),
-        "profile-plus": markRaw(ProfilePlus),
-        "corporate-pro": markRaw(CorporatePro),
-      },
-      copyStatus: "",
-      copyMessage: "",
-    };
-  },
-
-  methods: {
-    async copySignature(signatureKey) {
-      try {
-        const components = this.$refs.signatureComponents;
-        if (!components) {
-          throw new Error("No signature components found");
-        }
-
-        const componentIndex = Object.keys(this.signatures).indexOf(
-          signatureKey
-        );
-        const targetComponent = Array.isArray(components)
-          ? components[componentIndex]
-          : components;
-
-        if (!targetComponent || !targetComponent.$el) {
-          throw new Error("Signature component not found");
-        }
-
-        const signatureHtml = targetComponent.$el.outerHTML;
-
-        if (navigator.clipboard && navigator.clipboard.write) {
-          const htmlBlob = new Blob([signatureHtml], { type: "text/html" });
-          await navigator.clipboard.write([
-            new ClipboardItem({
-              "text/html": htmlBlob,
-            }),
-          ]);
-        } else {
-          const tempDiv = document.createElement("div");
-          tempDiv.style.position = "fixed";
-          tempDiv.style.left = "-9999px";
-          tempDiv.innerHTML = signatureHtml;
-          document.body.appendChild(tempDiv);
-
-          const range = document.createRange();
-          range.selectNode(tempDiv);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-
-          const success = document.execCommand("copy");
-
-          selection.removeAllRanges();
-          document.body.removeChild(tempDiv);
-
-          if (!success) {
-            throw new Error("Copy command failed");
-          }
-        }
-
-        this.copyStatus = "success";
-        this.copyMessage = "Signature copied to clipboard!";
-        setTimeout(() => {
-          this.copyMessage = "";
-          this.copyStatus = "";
-        }, 3000);
-      } catch (error) {
-        console.error("Failed to copy signature:", error);
-        this.copyStatus = "error";
-        this.copyMessage = "Failed to copy signature. Please try again.";
-        setTimeout(() => {
-          this.copyMessage = "";
-          this.copyStatus = "";
-        }, 3000);
-      }
-    },
-  },
-};
-</script>
-
-<style>
+<style scoped>
 .signatures-container {
+  position: relative;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 3rem 1rem;
+  /* Extra top padding clears fixed reset/theme controls over the first card. */
+  padding: 4.5rem 1rem 3rem;
   overflow-y: auto;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--page-bg);
+  /* Subtle planner-style dot grid */
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--text-color) 14%, transparent) 0.7px,
+    transparent 0.8px
+  );
+  background-size: 14px 14px;
+  background-position: 0 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.signatures-container::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.signatures-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
 }
 
 .signatures {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  width: 100%;
+  max-width: 680px;
 }
 
 .window {
-  background-color: var(--neutral-0);
-  border: 1px solid var(--neutral-2);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .window-top {
@@ -194,66 +312,167 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 0.25rem 0.5rem;
-  border-bottom: 1px solid var(--neutral-2);
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--page-bg);
+  border-radius: 0.5rem 0.5rem 0 0;
+  position: relative;
+  z-index: 2;
 }
 
 .window-title {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  color: var(--text-color);
+}
+
+.window-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.copy-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-tooltip {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  margin: 0;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  background: #e6e6e6;
+  color: #333333;
+  border: 1px solid #cccccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.copy-tooltip[data-status="error"] {
+  color: var(--red-1);
 }
 
 .window-body {
-  padding: 2rem;
-  background-color: white;
+  padding: 1.5rem;
+  background-color: var(--surface);
+  border-radius: 0 0 0.5rem 0.5rem;
+  overflow: hidden;
 }
 
-.copy-button {
+.window-body--code {
+  padding: 0;
+  min-height: 18rem;
+}
+
+.signature-root {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: var(--text-color);
+}
+
+/* Center only the outer signature table — nested social/link tables stay left. */
+.signature-root :deep(> table) {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.signature-override :deep(table) {
+  max-width: 100%;
+}
+
+.icon-button {
   display: flex;
   align-items: center;
-  background-color: var(--neutral-1);
-  border: 1px solid var(--neutral-2);
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: transparent;
+  border: none;
   cursor: pointer;
-  border-radius: 0.2rem;
-  padding: 0.25rem;
-  margin: 0;
-  transition: all 0.2s ease-in-out;
+  border-radius: 0.35rem;
+  color: var(--text-color);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.copy-button svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  fill: var(--neutral-8);
-  transition: all 0.2s ease-in-out;
-}
-
-.copy-button:hover {
-  outline: none;
-  border-color: var(--red-1);
-  box-shadow: 0 0 0 0.125rem rgba(255, 0, 0, 0.2);
-}
-
-.copy-button:active {
-  box-shadow: none;
-}
-
-.copy-button:hover svg {
-  fill: var(--red-1);
+.icon-button:hover {
+  color: var(--red-1);
+  background-color: color-mix(in srgb, var(--red-1) 10%, transparent);
 }
 
 @media screen and (max-width: 1024px) {
   .signatures-container {
-    height: max-content;
-    overflow-y: hidden;
-    flex-shrink: 0;
-    padding: 1rem;
-    max-width: 600px;
-    border: 1px solid var(--neutral-3);
-    border-top: none;
+    padding: 4.5rem 0.75rem 1.25rem;
+    align-items: center;
   }
 
   .signatures {
     gap: 1rem;
+    width: 100%;
+    max-width: min(100%, 680px);
+    margin-inline: auto;
+  }
+
+  .window {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .window-body:not(.window-body--code) {
+    padding: 1rem 0.75rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Center signatures; allow in-card horizontal scroll when tables are wider. */
+  .signature-root {
+    display: flex;
+    justify-content: center;
+    width: max-content;
+    min-width: 100%;
+    margin-inline: auto;
+  }
+
+  .signature-root :deep(> table) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .icon-button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .copy-tooltip {
+    max-width: min(70vw, 14rem);
+    white-space: normal;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .signatures-container {
+    padding: 4.25rem 0.5rem 1rem;
+  }
+
+  .window-body:not(.window-body--code) {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .window-body--code {
+    min-height: 14rem;
   }
 }
 </style>

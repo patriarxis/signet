@@ -1,198 +1,321 @@
+<script setup lang="ts">
+import { PhPlus, PhX } from "@phosphor-icons/vue";
+import { ref, watch } from "vue";
+import type { UserData } from "../types/signature";
+import { useScrollShadows } from "../composables/useScrollShadows";
+import { stripHtml, decodeHtmlEntities } from "../utils/html";
+
+const props = defineProps<{
+  userData: UserData;
+  drawerOpen?: boolean;
+  isMobile?: boolean;
+}>();
+
+const emit = defineEmits<{
+  "update:field": [key: keyof UserData, value: UserData[keyof UserData]];
+  "update:link": [
+    list: "bodyLinks" | "socialLinks",
+    index: number,
+    patch: { text?: string; url?: string },
+  ];
+  "add:link": [list: "bodyLinks" | "socialLinks"];
+  "remove:link": [list: "bodyLinks" | "socialLinks", index: number];
+  "close-drawer": [];
+}>();
+
+const asideRef = ref<HTMLElement | null>(null);
+const scrollContent = ref<HTMLElement | null>(null);
+const { canScrollUp, canScrollDown, update } = useScrollShadows(scrollContent);
+
+watch(
+  () => props.userData,
+  () => update(),
+  { deep: true },
+);
+
+watch(
+  () => props.drawerOpen,
+  () => {
+    // Recalc shadows after drawer opens and layout settles.
+    requestAnimationFrame(() => update());
+  },
+);
+
+function onField(key: keyof UserData, event: Event) {
+  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+  emit("update:field", key, target.value);
+}
+
+function plain(value: string) {
+  return decodeHtmlEntities(stripHtml(value));
+}
+
+function focusDrawer() {
+  const root = asideRef.value;
+  if (!root) return;
+  const first = root.querySelector<HTMLElement>(
+    'input:not([type="hidden"]), textarea, button:not([aria-hidden="true"])',
+  );
+  (first ?? root).focus();
+}
+
+defineExpose({ focusDrawer });
+</script>
+
 <template>
-  <aside class="aside">
+  <aside
+    id="editor-drawer"
+    ref="asideRef"
+    class="aside"
+    :class="{ 'aside--open': drawerOpen }"
+    :aria-hidden="isMobile && !drawerOpen ? true : undefined"
+    :inert="isMobile && !drawerOpen ? true : undefined"
+    tabindex="-1"
+  >
     <header class="header">
-      <h1 class="title">Signet - Email Signatures</h1>
+      <div class="header-top">
+        <h1 class="title">Signet</h1>
+        <button
+          v-if="isMobile"
+          type="button"
+          class="drawer-close"
+          title="Close editor"
+          aria-label="Close editor"
+          @click="emit('close-drawer')"
+        >
+          <PhX :size="18" weight="bold" />
+        </button>
+      </div>
       <p class="description">
-        Signet lets you browse and customize email signatures effortlessly.
-        Edit, copy, and use them as you please.
+        Edit in the sidebar or on a signature. Select text to bold, italic,
+        underline, strike, or link. Click an image to replace, link, or remove
+        it. Toggle code to edit HTML.
       </p>
     </header>
 
-    <div class="scroll-container" ref="container">
+    <div
+      class="scroll-container"
+      :class="{
+        'can-scroll-up': canScrollUp,
+        'can-scroll-down': canScrollDown,
+      }"
+    >
       <div class="scroll-shadow-top"></div>
       <div class="scroll-shadow-bottom"></div>
-      <div class="scroll-content" @scroll="handleScroll">
+      <div ref="scrollContent" class="scroll-content">
         <div class="inputs">
           <div class="input-group">
-            <label for="name">Name:</label>
+            <label for="name">Name</label>
             <input
-              type="text"
               id="name"
-              :value="userData.name"
-              @input="handleNameChange"
-              placeholder="Name"
+              type="text"
+              :value="plain(userData.name)"
+              placeholder="Add name"
+              @input="onField('name', $event)"
             />
           </div>
 
           <div class="input-group">
-            <label for="description">Description:</label>
+            <label for="description">Description</label>
             <input
-              type="text"
               id="description"
-              :value="userData.description"
-              @input="handleDescriptionChange"
-              placeholder="Description"
+              type="text"
+              :value="plain(userData.description)"
+              placeholder="Add title"
+              @input="onField('description', $event)"
             />
           </div>
 
           <div class="input-group">
-            <label for="companyName">Company Name:</label>
+            <label for="companyName">Company</label>
             <input
-              type="text"
               id="companyName"
-              :value="userData.companyName"
-              @input="handleCompanyNameChange"
-              placeholder="Company Name"
-            />
-          </div>
-
-          <div class="input-group">
-            <label for="companyTagline">Company Tagline:</label>
-            <input
               type="text"
+              :value="plain(userData.companyName)"
+              placeholder="Add company"
+              @input="onField('companyName', $event)"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="companyTagline">Tagline</label>
+            <input
               id="companyTagline"
-              :value="userData.companyTagline"
-              @input="handleCompanyTaglineChange"
-              placeholder="Company Tagline"
+              type="text"
+              :value="plain(userData.companyTagline)"
+              placeholder="Add tagline"
+              @input="onField('companyTagline', $event)"
             />
           </div>
 
           <div class="input-group">
-            <label for="phone">Phone:</label>
+            <label for="phone">Phone</label>
             <input
-              type="tel"
               id="phone"
-              :value="userData.phone"
-              @input="handlePhoneChange"
-              placeholder="Phone Number"
+              type="tel"
+              :value="plain(userData.phone)"
+              placeholder="Add phone"
+              @input="onField('phone', $event)"
             />
           </div>
 
           <div class="input-group">
-            <label for="email">Email:</label>
+            <label for="email">Email</label>
             <input
-              type="email"
               id="email"
-              :value="userData.email"
-              @input="handleEmailChange"
-              placeholder="Email Address"
+              type="email"
+              :value="plain(userData.email)"
+              placeholder="Add email"
+              @input="onField('email', $event)"
             />
           </div>
 
           <div class="input-group">
-            <label for="website">Website Name:</label>
+            <label for="website">Website</label>
             <div class="link-inputs">
               <input
-                type="text"
                 id="website"
-                :value="userData.website"
-                @input="handleWebsiteChange"
-                placeholder="Website Name"
+                type="text"
+                :value="plain(userData.website)"
+                placeholder="Website name"
+                @input="onField('website', $event)"
               />
               <input
                 class="link-href"
                 type="url"
                 id="websiteUrl"
                 :value="userData.websiteUrl"
-                @input="handleWebsiteUrlChange"
                 placeholder="URL"
+                @input="onField('websiteUrl', $event)"
               />
             </div>
           </div>
 
           <div class="input-group">
-            <label>Body Links:</label>
+            <label>Body Links</label>
             <div class="links">
               <div
-                class="link"
                 v-for="(link, index) in userData.bodyLinks"
-                :key="index"
+                :key="`body-${index}`"
+                class="link"
               >
                 <div class="link-inputs">
                   <input
                     class="link-name"
                     type="text"
-                    placeholder="Link Text"
-                    :value="link.text"
-                    @input="handleBodyLinkTextChange(index, $event)"
+                    placeholder="Link text"
+                    :value="plain(link.text)"
+                    @input="
+                      emit('update:link', 'bodyLinks', index, {
+                        text: ($event.target as HTMLInputElement).value,
+                      })
+                    "
                   />
-
                   <input
                     class="link-href"
                     type="url"
                     placeholder="URL"
                     :value="link.url"
-                    @input="handleBodyLinkUrlChange(index, $event)"
+                    @input="
+                      emit('update:link', 'bodyLinks', index, {
+                        url: ($event.target as HTMLInputElement).value,
+                      })
+                    "
                   />
                 </div>
-
-                <button class="remove-link" @click="removeBodyLink(index)">
-                  Remove
+                <button
+                  type="button"
+                  class="remove-link"
+                  title="Remove link"
+                  aria-label="Remove body link"
+                  @click="emit('remove:link', 'bodyLinks', index)"
+                >
+                  <PhX :size="14" weight="bold" />
                 </button>
               </div>
-
-              <button class="add-link" @click="addBodyLink">
-                + Add Body Link
+              <button
+                type="button"
+                class="add-link"
+                @click="emit('add:link', 'bodyLinks')"
+              >
+                <PhPlus :size="14" weight="bold" />
+                Add Body Link
               </button>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Social Links:</label>
+            <label>Social Links</label>
             <div class="links">
               <div
-                class="link"
                 v-for="(link, index) in userData.socialLinks"
-                :key="index"
+                :key="`social-${index}`"
+                class="link"
               >
                 <div class="link-inputs">
                   <input
                     class="link-name"
                     type="text"
-                    placeholder="Link Text"
-                    :value="link.text"
-                    @input="handleSocialLinkTextChange(index, $event)"
+                    placeholder="Link text"
+                    :value="plain(link.text)"
+                    @input="
+                      emit('update:link', 'socialLinks', index, {
+                        text: ($event.target as HTMLInputElement).value,
+                      })
+                    "
                   />
-
                   <input
                     class="link-href"
                     type="url"
                     placeholder="URL"
                     :value="link.url"
-                    @input="handleSocialLinkUrlChange(index, $event)"
+                    @input="
+                      emit('update:link', 'socialLinks', index, {
+                        url: ($event.target as HTMLInputElement).value,
+                      })
+                    "
                   />
                 </div>
-
-                <button class="remove-link" @click="removeSocialLink(index)">
-                  Remove
+                <button
+                  type="button"
+                  class="remove-link"
+                  title="Remove link"
+                  aria-label="Remove social link"
+                  @click="emit('remove:link', 'socialLinks', index)"
+                >
+                  <PhX :size="14" weight="bold" />
                 </button>
               </div>
-
-              <button class="add-link" @click="addSocialLink">
-                + Add Social Link
+              <button
+                type="button"
+                class="add-link"
+                @click="emit('add:link', 'socialLinks')"
+              >
+                <PhPlus :size="14" weight="bold" />
+                Add Social Link
               </button>
             </div>
           </div>
 
           <div class="input-group">
-            <label for="copyrights">Copyrights:</label>
+            <label for="copyrights">Copyrights</label>
             <input
-              type="text"
               id="copyrights"
-              :value="userData.copyrights"
-              @input="handleCopyrightsChange"
-              placeholder="Copyrights Text"
+              type="text"
+              :value="plain(userData.copyrights)"
+              placeholder="Add copyright"
+              @input="onField('copyrights', $event)"
             />
           </div>
 
-          <div class="input-group">
-            <label for="disclaimer">Disclaimer:</label>
+          <div class="input-group input-group--disclaimer">
+            <label for="disclaimer">Disclaimer</label>
             <textarea
               id="disclaimer"
-              :value="userData.disclaimer"
-              @input="handleDisclaimerChange"
-              placeholder="Disclaimer Text"
-            ></textarea>
+              :value="plain(userData.disclaimer)"
+              placeholder="Add disclaimer"
+              @input="onField('disclaimer', $event)"
+            />
           </div>
         </div>
       </div>
@@ -200,221 +323,33 @@
   </aside>
 </template>
 
-<script>
-export default {
-  props: {
-    userData: {
-      type: Object,
-      required: true,
-      default: () => ({
-        name: "",
-        description: "",
-        companyName: "",
-        companyTagline: "",
-        phone: "",
-        email: "",
-        website: "",
-        websiteUrl: "",
-        bodyLinks: [],
-        socialLinks: [],
-        copyrights: "",
-        disclaimer: "",
-      }),
-    },
-  },
-  mounted() {
-    this.updateScrollShadows();
-    const inputsElement = this.$el.querySelector(".scroll-content");
-    if (inputsElement) {
-      inputsElement.addEventListener("scroll", this.handleScroll);
-    }
-  },
-  unmounted() {
-    const inputsElement = this.$el.querySelector(".scroll-content");
-    if (inputsElement) {
-      inputsElement.removeEventListener("scroll", this.handleScroll);
-    }
-  },
-  methods: {
-    handleNameChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        name: event.target.value,
-      });
-    },
-    handleDescriptionChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        description: event.target.value,
-      });
-    },
-    handleCompanyNameChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        companyName: event.target.value,
-      });
-    },
-    handleCompanyTaglineChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        companyTagline: event.target.value,
-      });
-    },
-    handlePhoneChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        phone: event.target.value,
-      });
-    },
-    handleEmailChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        email: event.target.value,
-      });
-    },
-    handleWebsiteChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        website: event.target.value,
-      });
-    },
-    handleWebsiteUrlChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        websiteUrl: event.target.value,
-      });
-    },
-    handleBodyLinkTextChange(index, event) {
-      const newLinks = [...this.userData.bodyLinks];
-      newLinks[index] = {
-        ...newLinks[index],
-        text: event.target.value,
-      };
-      this.$emit("update:userData", {
-        ...this.userData,
-        bodyLinks: newLinks,
-      });
-    },
-    handleBodyLinkUrlChange(index, event) {
-      const newLinks = [...this.userData.bodyLinks];
-      newLinks[index] = {
-        ...newLinks[index],
-        url: event.target.value,
-      };
-      this.$emit("update:userData", {
-        ...this.userData,
-        bodyLinks: newLinks,
-      });
-    },
-    addBodyLink() {
-      this.$emit("update:userData", {
-        ...this.userData,
-        bodyLinks: [...this.userData.bodyLinks, { text: "", url: "" }],
-      });
-    },
-    removeBodyLink(index) {
-      const newLinks = [...this.userData.bodyLinks];
-      newLinks.splice(index, 1);
-      this.$emit("update:userData", {
-        ...this.userData,
-        bodyLinks: newLinks,
-      });
-    },
-    handleSocialLinkTextChange(index, event) {
-      const newLinks = [...this.userData.socialLinks];
-      newLinks[index] = {
-        ...newLinks[index],
-        text: event.target.value,
-      };
-      this.$emit("update:userData", {
-        ...this.userData,
-        socialLinks: newLinks,
-      });
-    },
-    handleSocialLinkUrlChange(index, event) {
-      const newLinks = [...this.userData.socialLinks];
-      newLinks[index] = {
-        ...newLinks[index],
-        url: event.target.value,
-      };
-      this.$emit("update:userData", {
-        ...this.userData,
-        socialLinks: newLinks,
-      });
-    },
-    addSocialLink() {
-      this.$emit("update:userData", {
-        ...this.userData,
-        socialLinks: [...this.userData.socialLinks, { text: "", url: "" }],
-      });
-    },
-    removeSocialLink(index) {
-      const newLinks = [...this.userData.socialLinks];
-      newLinks.splice(index, 1);
-      this.$emit("update:userData", {
-        ...this.userData,
-        socialLinks: newLinks,
-      });
-    },
-    handleCopyrightsChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        copyrights: event.target.value,
-      });
-    },
-    handleDisclaimerChange(event) {
-      this.$emit("update:userData", {
-        ...this.userData,
-        disclaimer: event.target.value,
-      });
-    },
-    handleScroll(event) {
-      const scrollElement =
-        event?.target || this.$el.querySelector(".scroll-content");
-      if (!scrollElement) return;
-
-      const container = this.$refs.container;
-      if (!container) return;
-
-      const scrollTop = scrollElement.scrollTop;
-      const scrollHeight = scrollElement.scrollHeight;
-      const clientHeight = scrollElement.clientHeight;
-
-      container.classList.remove("can-scroll-up", "can-scroll-down");
-
-      if (scrollTop > 0) {
-        container.classList.add("can-scroll-up");
-      }
-
-      if (scrollTop + clientHeight < scrollHeight) {
-        container.classList.add("can-scroll-down");
-      }
-    },
-    updateScrollShadows() {
-      this.handleScroll();
-    },
-  },
-};
-</script>
-
 <style scoped>
 .aside {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   max-width: 400px;
   flex-shrink: 0;
-  border-right: 1px solid var(--neutral-3);
-  background-color: var(--neutral-1);
+  border-right: 1px solid var(--border);
+  background-color: var(--surface);
 }
 
 .header {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   gap: 0.5rem;
   padding: 1.5rem;
-  background-color: var(--neutral-1);
-  border-bottom: 1px solid var(--neutral-3);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .title {
@@ -422,20 +357,45 @@ export default {
   font-weight: 700;
 }
 
+.drawer-close {
+  display: none;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--text-color);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.drawer-close:hover {
+  background-color: var(--neutral-2);
+  color: var(--red-1);
+}
+
 .description {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--neutral-6);
 }
 
 .scroll-container {
   position: relative;
-  flex-grow: 1;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   overflow: hidden;
-  transition: all 0.2s ease-in-out;
+  min-height: 0;
 }
 
 .scroll-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   overflow-y: auto;
@@ -450,7 +410,7 @@ export default {
   height: 2rem;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease;
   z-index: 20;
 }
 
@@ -458,7 +418,7 @@ export default {
   top: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.15) 0%,
     rgba(0, 0, 0, 0) 100%
   );
 }
@@ -467,32 +427,38 @@ export default {
   bottom: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.15) 0%,
     rgba(0, 0, 0, 0) 100%
   );
 }
 
-.can-scroll-up .scroll-shadow-top {
-  opacity: 1;
-}
-
+.can-scroll-up .scroll-shadow-top,
 .can-scroll-down .scroll-shadow-bottom {
   opacity: 1;
 }
 
 .inputs {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  flex: 1 0 auto;
 }
 
 .input-group {
   display: flex;
   flex-direction: row;
+  align-items: stretch;
+  flex-shrink: 0;
 }
 
 .input-group:not(:last-child) {
-  border-bottom: 1px solid var(--neutral-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.input-group--disclaimer {
+  flex: 1 1 auto;
+  min-height: 12.5rem;
 }
 
 label {
@@ -501,7 +467,7 @@ label {
   padding: 0.5rem;
   font-weight: 500;
   font-size: 0.825rem;
-  border-right: 1px solid var(--neutral-3);
+  border-right: 1px solid var(--border);
   color: var(--neutral-5);
 }
 
@@ -509,38 +475,56 @@ input,
 textarea {
   position: relative;
   flex-grow: 1;
+  min-width: 0;
   padding: 0.5rem;
   border: 1px solid transparent;
   font-size: 0.825rem;
-  background-color: var(--neutral-1);
-  transition-property: border-color, box-shadow;
-  transition-duration: 0.2s;
-  transition-duration: ease-in-out;
+  background-color: var(--surface);
+  color: var(--text-color);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 textarea {
-  width: 100%;
-  min-height: 300px;
+  width: auto;
+  flex: 1 1 auto;
+  align-self: stretch;
+  height: 100%;
+  min-height: 12.5rem;
   resize: none;
+  line-height: 1.45;
+}
+
+.scroll-content,
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.scroll-content::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.scroll-content::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
 }
 
 input:focus,
 textarea:focus {
-  outline: none;
   border-color: var(--red-1);
-  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.2);
+  box-shadow: 0 0 0 0.15rem rgba(239, 65, 54, 0.2);
   z-index: 1;
-}
-
-input:active,
-textarea:active {
-  box-shadow: none;
 }
 
 .links {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-width: 0;
 }
 
 .link {
@@ -551,20 +535,18 @@ textarea:active {
 }
 
 .link:not(:last-child) {
-  border-bottom: 1px solid var(--neutral-3);
+  border-bottom: 1px solid var(--border);
 }
 
 .link-inputs {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  padding-right: 1.75rem;
 }
 
 .link-href {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background-color: var(--neutral-2);
+  background-color: var(--page-bg);
   color: var(--neutral-7);
   padding: 0.25rem;
   margin: 0 0.5rem 0.5rem;
@@ -574,24 +556,25 @@ textarea:active {
 
 .remove-link {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.4rem;
+  right: 0.4rem;
   z-index: 10;
-  color: var(--white);
-  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 0.7rem;
   color: var(--neutral-5);
-  transition: color 0.2s ease-in-out;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .remove-link:hover {
   color: var(--red-1);
-}
-
-.remove-link:focus {
-  outline: none;
+  background-color: var(--page-bg);
 }
 
 .add-link {
@@ -599,42 +582,108 @@ textarea:active {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 0.35rem;
   margin: 0.5rem;
-  padding: 0.25rem;
+  padding: 0.4rem;
   border-radius: 0.25rem;
   cursor: pointer;
   font-size: 0.7rem;
   color: var(--neutral-7);
-  background-color: var(--neutral-2);
-  transition: all 0.2s ease-in-out;
+  background-color: var(--page-bg);
+  border: 1px solid var(--border);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .add-link:hover {
-  color: var(--neutral-0);
+  color: #f2f2f2;
   background-color: var(--red-1);
-  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.2);
-}
-
-.add-link:active {
-  box-shadow: none;
-}
-
-.add-link:focus {
-  outline: none;
+  border-color: var(--red-1);
 }
 
 @media screen and (max-width: 1024px) {
   .aside {
-    max-width: 600px;
-    border-left: 1px solid var(--neutral-3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: min(90vw, 400px);
+    max-width: min(90vw, 400px);
+    height: 100%;
+    height: 100dvh;
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    pointer-events: none;
   }
 
-  .scroll-container {
-    height: 200px;
+  .aside--open {
+    transform: translateX(0);
+    pointer-events: auto;
   }
 
-  .scroll-container:focus-within {
-    height: 600px;
+  .drawer-close {
+    display: flex;
+  }
+
+  .header {
+    padding: 1.25rem 1.25rem 1rem;
+  }
+
+  .remove-link {
+    width: 2.5rem;
+    height: 2.5rem;
+    top: 0.25rem;
+    right: 0.15rem;
+  }
+
+  .link-inputs {
+    padding-right: 2.75rem;
+  }
+
+  .add-link {
+    min-height: 2.5rem;
+    padding: 0.55rem;
+  }
+
+  input,
+  textarea {
+    font-size: 1rem;
+    padding: 0.65rem 0.5rem;
+  }
+
+  label {
+    padding: 0.65rem 0.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .aside {
+    width: 100vw;
+    max-width: none;
+    border-right: none;
+    box-shadow: none;
+  }
+
+  .description {
+    font-size: 0.875rem;
+  }
+
+  .input-group--disclaimer,
+  textarea {
+    min-height: 10rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aside {
+    transition: none;
   }
 }
 </style>

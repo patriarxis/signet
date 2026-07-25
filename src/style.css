@@ -1,18 +1,16 @@
 :root {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Pliant", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light;
-
-  color: var(--neutral-8);
+  color: var(--text-color);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --red-1: #EF4136;
-
+  --red-1: #ef4136;
   --neutral-10: #0d0d0d;
   --neutral-9: #1a1a1a;
   --neutral-8: #333333;
@@ -24,32 +22,106 @@
   --neutral-2: #cccccc;
   --neutral-1: #e6e6e6;
   --neutral-0: #f2f2f2;
+
+  --text-color: var(--neutral-8);
+  --placeholder-color: var(--neutral-5);
+  --surface: var(--neutral-0);
+  --border: var(--neutral-2);
+  --page-bg: var(--neutral-1);
+  --toolbar-border: rgba(0, 0, 0, 0.1);
+
+  --code-active-line: rgba(0, 0, 0, 0.05);
+  --code-selection: var(--red-1);
+  --selection-fg: #ffffff;
+  --code-tag: #1f7a4d;
+  --code-attr: #7a3fb5;
+  --code-string: #0b56a4;
+  --code-number: #b4551d;
+  --code-keyword: #a12a6b;
+  --code-comment: #7c8590;
+  --code-punct: #5c6570;
 }
 
-* {
+[data-theme="light"] {
+  color-scheme: light;
+
+  --red-1: #ef4136;
+  --neutral-10: #0d0d0d;
+  --neutral-9: #1a1a1a;
+  --neutral-8: #333333;
+  --neutral-7: #4d4d4d;
+  --neutral-6: #666666;
+  --neutral-5: #808080;
+  --neutral-4: #999999;
+  --neutral-3: #b3b3b3;
+  --neutral-2: #cccccc;
+  --neutral-1: #e6e6e6;
+  --neutral-0: #f2f2f2;
+
+  --text-color: var(--neutral-8);
+  --placeholder-color: var(--neutral-5);
+  --surface: #ffffff;
+  --border: var(--neutral-2);
+  --page-bg: var(--neutral-1);
+  --toolbar-border: rgba(0, 0, 0, 0.1);
+
+  --code-active-line: rgba(0, 0, 0, 0.05);
+  --code-selection: var(--red-1);
+  --selection-fg: #ffffff;
+  --code-tag: #1f7a4d;
+  --code-attr: #7a3fb5;
+  --code-string: #0b56a4;
+  --code-number: #b4551d;
+  --code-keyword: #a12a6b;
+  --code-comment: #7c8590;
+  --code-punct: #5c6570;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --red-1: #ef4136;
+  --neutral-10: #f2f2f2;
+  --neutral-9: #e6e6e6;
+  --neutral-8: #cccccc;
+  --neutral-7: #b3b3b3;
+  --neutral-6: #999999;
+  --neutral-5: #808080;
+  --neutral-4: #666666;
+  --neutral-3: #4d4d4d;
+  --neutral-2: #333333;
+  --neutral-1: #1a1a1a;
+  --neutral-0: #0d0d0d;
+
+  --text-color: var(--neutral-8);
+  --placeholder-color: var(--neutral-5);
+  --surface: #141414;
+  --border: rgba(255, 255, 255, 0.1);
+  --page-bg: var(--neutral-1);
+  --toolbar-border: rgba(255, 255, 255, 0.1);
+
+  --code-active-line: rgba(255, 255, 255, 0.07);
+  --code-selection: var(--red-1);
+  --selection-fg: #0d0d0d;
+  --code-tag: #7ee787;
+  --code-attr: #d2a8ff;
+  --code-string: #a5d6ff;
+  --code-number: #ffa657;
+  --code-keyword: #ff7b72;
+  --code-comment: #9aa4ae;
+  --code-punct: #c9d1d9;
+}
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
-:focus {
-  outline: var(--red-1) solid 1px;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-::selection {
-  background-color: var(--red-1);
-  color: var(--neutral-0);
-}
-
-html,
-body {
-  overflow: auto;
+html {
+  font-size: clamp(14px, 1.4vw, 16px);
 }
 
 html,
@@ -57,22 +129,46 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--neutral-1);
+  background-color: var(--page-bg);
+  color: var(--text-color);
+}
+
+/* Drawer locks the preview scroller; html/body are already overflow:hidden. */
+body.drawer-open .signatures-container {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+::selection {
+  background-color: var(--red-1);
+  color: var(--selection-fg);
 }
 
 input,
 textarea {
-  font-family: "Space Grotesk", sans-serif;
+  font: inherit;
   border: none;
   background-color: transparent;
+  color: inherit;
 }
 
 button {
   border: none;
   background-color: transparent;
+  font: inherit;
 }
 
 #app {
   width: 100%;
   height: 100%;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--red-1);
+  outline-offset: 2px;
 }
