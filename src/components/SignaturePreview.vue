@@ -15,6 +15,7 @@ import {
   CorporatePro,
   DarkEdge,
   ProfilePlus,
+  TechmirionTide,
 } from "../signatures";
 import type {
   BodyLink,
@@ -84,6 +85,11 @@ const signatures: SignatureDef[] = [
     id: "corporate-pro",
     label: "Corporate Pro",
     component: markRaw(CorporatePro),
+  },
+  {
+    id: "techmirion-tide",
+    label: "Techmirion Tide",
+    component: markRaw(TechmirionTide),
   },
 ];
 
